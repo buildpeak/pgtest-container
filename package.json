@@ -11,6 +11,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "publishConfig": {
+    "registry": "https://github.com/buildpeak/pgtest-container"
+  },
   "devDependencies": {
     "@types/dockerode": "^3.3.26",
     "@types/node": "^20.11.25",
