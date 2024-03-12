@@ -8,7 +8,7 @@
     "build": "tsc",
     "test": "jest",
     "lint": "eslint --fix src",
-    "prepare": "npm build && npm install husky -D && husky install"
+    "prepare": "npm install husky -D && husky install"
   },
   "keywords": [],
   "author": "",
