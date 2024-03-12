@@ -2,11 +2,13 @@
   "name": "pgtest-container",
   "version": "1.0.2",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "test": "jest",
     "lint": "eslint --fix src",
-    "prepare": "npm install husky -D && husky install"
+    "prepare": "npm build && npm install husky -D && husky install"
   },
   "keywords": [],
   "author": "",
