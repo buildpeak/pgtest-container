@@ -13,10 +13,10 @@ npm install pgtest-container
 ```typescript
 import { Pool } from 'pg';
 
-import { startPostgresContainer } from '../src/postgres-container';
+import { PostgresContainer } from 'pgtest-container';
 
 async function main() {
-  const container = await startPostgresContainer('15', { sslmode: 'disable' });
+  const container = await PostgresContainer.start('15', { sslmode: 'disable' });
 
   console.log(container);
 
