@@ -12,6 +12,8 @@ export type PostgresContainerConfig = {
 
 let debug = process.env.DEBUG === '1';
 
+process.setMaxListeners(0);
+
 export class PostgresContainer {
   static containerIds: string[] = [];
 
