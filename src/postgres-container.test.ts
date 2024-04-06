@@ -23,7 +23,7 @@ jest.mock('dockerode', () => ({
     }),
     modem: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      followProgress: (stream: any, callback: any) => {
+      followProgress: (_stream: any, callback: any) => {
         callback(null, {});
       },
     },
@@ -35,7 +35,7 @@ jest.mock('dockerode', () => ({
 jest.mock('net', () => ({
   createServer: jest.fn().mockReturnValue({
     unref: jest.fn(),
-    listen: (port: number, cb: () => void) => {
+    listen: (_port: number, cb: () => void) => {
       cb();
     },
     on: jest.fn(),

@@ -28,9 +28,11 @@ export class PostgresContainer {
     process.on('SIGHUP', PostgresContainer.cleanup);
     process.on('SIGTERM', PostgresContainer.cleanup);
 
-    process.on('unhandledRejection', async (error) => {
+    process.setMaxListeners(0);
+
+    process.on('unhandledRejection', (error) => {
       console.error('Unhandled promise rejection:', error);
-      await PostgresContainer.cleanup();
+      PostgresContainer.cleanup();
       throw error;
     });
 
@@ -116,19 +118,25 @@ export class PostgresContainer {
     await container.remove();
   }
 
-  static async cleanup(signal?: NodeJS.Signals) {
+  static cleanup(signal?: NodeJS.Signals) {
     console.log(`caught signal: ${signal}`);
 
     const docker = new Dockerobe();
     for (const id of PostgresContainer.containerIds) {
       console.log(`stopping and removing container: ${id}`);
-      try {
-        const container = docker.getContainer(id);
-        await container.stop();
-        await container.remove();
-      } catch (error) {
-        console.error('Error stopping container:', error);
-      }
+      const container = docker.getContainer(id);
+      container
+        .stop()
+        .then(() =>
+          container
+            .remove()
+            .then(() => {
+              console.log(`${id} is stopped and removed`);
+              process.exit(0);
+            })
+            .catch(console.error),
+        )
+        .catch(console.error);
     }
   }
 }
