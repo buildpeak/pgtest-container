@@ -166,7 +166,9 @@ async function waitUntilConnectable(host: string, port: number) {
       resolve();
     });
     socket.on('error', async (error) => {
-      console.error('Connection error, retrying in 300ms', error);
+      if (debug) {
+        console.error('Connection error, retrying in 300ms', error);
+      }
       await new Promise((resolve) => setTimeout(resolve, 300));
       socket.connect(port, host);
     });
