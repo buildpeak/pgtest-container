@@ -28,8 +28,6 @@ export class PostgresContainer {
     process.on('SIGHUP', PostgresContainer.cleanup);
     process.on('SIGTERM', PostgresContainer.cleanup);
 
-    process.setMaxListeners(0);
-
     process.on('unhandledRejection', (error) => {
       console.error('Unhandled promise rejection:', error);
       PostgresContainer.cleanup();
@@ -161,26 +159,19 @@ async function waitUntilHealthy(docker: Dockerobe, containerId: string) {
 
 async function waitUntilConnectable(host: string, port: number) {
   const socket = new net.Socket();
-  let exit = false;
-  while (!exit) {
-    if (debug) {
-      console.log(`waiting for ${host}:${port}`);
-    }
-    try {
-      await new Promise<void>((resolve, reject) => {
-        socket.on('connect', () => {
-          exit = true;
-          socket.end();
-          resolve();
-        });
-        socket.on('error', reject);
-        socket.connect(port, host);
-      });
-      return;
-    } catch (error) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-  }
+
+  return new Promise<void>((resolve) => {
+    socket.on('connect', () => {
+      socket.end();
+      resolve();
+    });
+    socket.on('error', async (error) => {
+      console.error('Connection error, retrying in 300ms', error);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      socket.connect(port, host);
+    });
+    socket.connect(port, host);
+  });
 }
 
 const passwordLetters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

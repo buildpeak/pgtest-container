@@ -48,6 +48,7 @@ jest.mock('net', () => ({
         cb();
       }
     },
+    end: jest.fn(),
     connect: jest.fn(),
   })),
 }));
